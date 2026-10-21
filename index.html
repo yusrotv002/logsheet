@@ -1,0 +1,399 @@
+<style>
+  :root {
+    color-scheme: light;
+    --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+    --bg: #f3f4f1; --panel: #ffffff; --panel-2: #f8f8f6;
+    --fg: #16181a; --fg-2: #4d5257; --fg-3: #7b8086;
+    --line: #e4e5e1; --line-strong: #cfd1cc;
+    --accent: #1f5fae; --accent-soft: #e6eef8; --accent-fg: #ffffff;
+    --hi: #c2410c; --lo: #1f5fae;
+    --grid: #ecedea; --axis: #b9bcb6;
+    --shadow: 0 1px 2px rgba(16, 24, 32, .05), 0 4px 16px rgba(16, 24, 32, .05);
+    --tip-bg: #16181a; --tip-fg: #ffffff; --tip-fg-2: #b8bcc2;
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948;
+    --r: 12px; --r-sm: 8px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #111315; --panel: #1a1d20; --panel-2: #202428;
+      --fg: #eef0f2; --fg-2: #b7bcc2; --fg-3: #858b92;
+      --line: #2b3035; --line-strong: #3a4046;
+      --accent: #5b9be8; --accent-soft: #1d2a3a; --accent-fg: #0d1117;
+      --hi: #f08a4b; --lo: #5b9be8;
+      --grid: #24292e; --axis: #4a5157;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 16px rgba(0, 0, 0, .25);
+      --tip-bg: #eef0f2; --tip-fg: #111315; --tip-fg-2: #4d5257;
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #111315; --panel: #1a1d20; --panel-2: #202428;
+    --fg: #eef0f2; --fg-2: #b7bcc2; --fg-3: #858b92;
+    --line: #2b3035; --line-strong: #3a4046;
+    --accent: #5b9be8; --accent-soft: #1d2a3a; --accent-fg: #0d1117;
+    --hi: #f08a4b; --lo: #5b9be8;
+    --grid: #24292e; --axis: #4a5157;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 16px rgba(0, 0, 0, .25);
+    --tip-bg: #eef0f2; --tip-fg: #111315; --tip-fg-2: #4d5257;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+  .lm { display: grid; gap: 20px; max-width: 72rem; margin-inline: auto; padding: 28px 16px 40px; font-variant-numeric: tabular-nums; }
+
+  .lm > *, .lm-card > *, .lm-filter > * { min-width: 0; }
+  .lm-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .lm-brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .lm-logo { flex: none; width: 44px; height: 44px; border-radius: 12px; background: var(--accent); color: var(--accent-fg); display: grid; place-items: center; }
+  .lm-logo svg { width: 24px; height: 24px; }
+  .lm-head h1 { margin: 0; font-family: "Montserrat", var(--font-sans); font-size: 26px; font-weight: 800; letter-spacing: .06em; line-height: 1.15; }
+  .lm-hari { margin: 2px 0 0; font-size: 15px; color: var(--fg-2); }
+  .lm-theme { font: inherit; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--panel); color: var(--fg-2); cursor: pointer; }
+  .lm-theme:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  .lm-cats { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 22px; width: fit-content; max-width: 100%; box-shadow: var(--shadow); }
+  .lm-cat { font: inherit; font-size: 14px; font-weight: 550; padding: 8px 16px; border: 0; border-radius: 999px; background: transparent; color: var(--fg-2); cursor: pointer; white-space: nowrap; }
+  .lm-cat:hover { color: var(--fg); background: var(--panel-2); }
+  .lm-cat[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
+
+  .lm-panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); }
+  .lm-filter { padding: 16px 18px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px 16px; }
+  .lm-field { display: grid; gap: 6px; min-width: 0; }
+  .f-date { grid-column: span 4; } .f-jam { grid-column: span 2; } .f-gi { grid-column: span 2; } .f-nama { grid-column: span 2; }
+  .lm-datebox { display: flex; gap: 6px; min-width: 0; }
+  .lm-datebox select { flex: 1; }
+  .lm-step { flex: none; width: 40px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line-strong); border-radius: var(--r-sm); background: var(--panel-2); color: var(--fg); cursor: pointer; }
+  .lm-step svg { width: 18px; height: 18px; }
+  .lm-step:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .lm-step:disabled { opacity: .35; cursor: default; }
+  @media (max-width: 960px) { .f-date { grid-column: span 6; } .f-jam { grid-column: span 3; } .f-gi, .f-nama { grid-column: span 6; } }
+  @media (max-width: 520px) { .f-date, .f-gi, .f-nama { grid-column: span 12; } .f-jam { grid-column: span 6; } }
+  .lm-field > span { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--fg-3); }
+  .lm-field select { font: inherit; font-size: 14px; padding: 9px 34px 9px 12px; border: 1px solid var(--line-strong); border-radius: var(--r-sm); background-color: var(--panel-2); color: var(--fg); width: 100%; min-width: 0; appearance: none; -webkit-appearance: none; cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, var(--fg-3) 50%), linear-gradient(135deg, var(--fg-3) 50%, transparent 50%); background-position: calc(100% - 17px) 50%, calc(100% - 12px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+  .lm-field select:hover { border-color: var(--fg-3); }
+  .lm select:focus-visible, .lm button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .lm-card { padding: 20px 22px 16px; display: grid; gap: 18px; min-width: 0; }
+  .lm-cardhead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px 20px; flex-wrap: wrap; }
+  .lm-cardhead h2 { margin: 0; font-size: 18px; font-weight: 650; }
+  .lm-take { margin: 3px 0 0; font-size: 13px; color: var(--fg-3); }
+  .lm-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .lm-tab { font: inherit; font-size: 13px; font-weight: 550; padding: 6px 12px; border: 1px solid var(--line-strong); border-radius: var(--r-sm); background: transparent; color: var(--fg-2); cursor: pointer; }
+  .lm-tab:hover { color: var(--fg); border-color: var(--fg-3); }
+  .lm-tab[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+
+  .lm-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 12px; }
+  .lm-stat { position: relative; display: grid; gap: 4px; padding: 14px 16px 14px 18px; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; }
+  .lm-stat::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--k, var(--accent)); }
+  .lm-stat.k-hi { --k: var(--hi); } .lm-stat.k-lo { --k: var(--lo); } .lm-stat.k-avg { --k: var(--fg-3); }
+  .lm-lbl { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--fg-3); }
+  .lm-bigrow { display: flex; align-items: baseline; gap: 6px; }
+  .lm-big { font-size: 30px; font-weight: 650; letter-spacing: -.02em; line-height: 1.1; }
+  .lm-unit { font-size: 14px; color: var(--fg-2); font-weight: 500; }
+  .lm-at { font-size: 13px; color: var(--fg-2); }
+  @media (max-width: 560px) { .lm-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } .lm-stat { padding: 10px 10px 10px 14px; } .lm-big { font-size: 20px; } .lm-unit, .lm-at { font-size: 11px; } .lm-lbl { font-size: 10px; } .lm-card { padding: 16px 14px 12px; } }
+
+  .lm-tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-sm); }
+  .lm-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  .lm-table th, .lm-table td { padding: 9px 14px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+  .lm-table thead th { background: var(--panel-2); color: var(--fg-3); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .lm-table tbody tr:last-child td { border-bottom: 0; }
+  .lm-table tbody tr:hover td { background: var(--panel-2); }
+  .lm-table th:first-child, .lm-table td:first-child { text-align: left; font-weight: 600; }
+  .lm-table td.c-hi { color: var(--fg); font-weight: 600; }
+  .lm-table td.c-time { color: var(--fg-3); }
+  .lm-sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
+
+  .lm-chart { position: relative; min-height: 300px; }
+  .lm-chart svg { display: block; overflow: visible; }
+  .lm-tip { position: absolute; pointer-events: none; background: var(--tip-bg); color: var(--tip-fg); border-radius: var(--r-sm); box-shadow: 0 6px 20px rgba(0,0,0,.18); padding: 8px 11px; font-size: 13px; white-space: nowrap; display: grid; gap: 3px; z-index: 2; }
+  .lm-tip .lm-tt { color: var(--tip-fg-2); font-size: 12px; }
+  .lm-tip b { font-weight: 650; }
+  .lm-msg { display: flex; align-items: center; justify-content: center; min-height: 300px; color: var(--fg-3); font-size: 14px; gap: 8px; }
+  .lm-msg.bad::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #c4402f; }
+  .lm-foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 12px; }
+  .lm-meta { margin: 0; font-size: 12px; color: var(--fg-3); }
+  .lm-notes { display: none; }
+</style>
+
+<div class="lm">
+  <header class="lm-head" id="ringkasan">
+    <div class="lm-brand">
+      <div class="lm-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg></div>
+      <div>
+        <h1>DASHBOARD LOGSHEET</h1>
+        <p class="lm-hari" id="lm-hari" hidden></p>
+      </div>
+    </div>
+    <button type="button" class="lm-theme" id="lm-theme"></button>
+  </header>
+
+  <nav class="lm-cats" id="kategori" aria-label="Kategori"></nav>
+
+  <section class="lm-panel lm-filter" id="filter" aria-label="Filter">
+    <div class="lm-field f-date"><span><label for="lm-date">Tanggal</label></span><div class="lm-datebox"><button type="button" class="lm-step" id="lm-prev" aria-label="Tanggal sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><select id="lm-date" data-source="daftar_tanggal"></select><button type="button" class="lm-step" id="lm-next" aria-label="Tanggal berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button></div></div>
+    <label class="lm-field f-jam"><span>Jam awal</span><select id="lm-awal"></select></label>
+    <label class="lm-field f-jam"><span>Jam akhir</span><select id="lm-akhir"></select></label>
+    <label class="lm-field f-gi"><span>Gardu induk</span><select id="lm-gi"></select></label>
+    <label class="lm-field f-nama"><span id="lm-nama-lbl">Peralatan</span><select id="lm-nama"></select></label>
+  </section>
+
+  <section class="lm-panel lm-card" id="grafik">
+    <div class="lm-cardhead">
+      <div><h2 id="lm-judul"></h2><p class="lm-take" id="lm-take"></p></div>
+      <div class="lm-tabs" id="lm-tabs" role="group" aria-label="Elemen"></div>
+    </div>
+    <div id="lm-stats"></div>
+    <div class="lm-chart" id="lm-chart"></div>
+    <div class="lm-foot"><p class="lm-meta" id="lm-meta"></p></div>
+  </section>
+  <footer class="lm-notes" id="keterangan" hidden>
+    <p class="lm-meta" id="lm-notes"></p>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const SLOTS = [];
+  for (let i = 1; i <= 48; i++) { const m = i * 30; SLOTS.push('j' + String(Math.floor(m / 60)).padStart(2, '0') + String(m % 60).padStart(2, '0')); }
+  const jam = (s) => s.slice(1, 3) + ':' + s.slice(3);
+  const CATS = [['IBT500', 'IBT 500/150 kV', 'IBT'], ['IBT150', 'IBT 150/70 kV', 'IBT'], ['SUTT150', 'SUTT 150 kV', 'Penghantar'], ['SUTT70', 'SUTT 70 kV', 'Penghantar'], ['TRAFO', 'Trafo', 'Trafo']];
+  const UNIT = { P: 'MW', Q: 'MVAr', V: 'kV', I: 'A', S: 'MVA' };
+  const NAME = { P: 'Daya aktif', Q: 'Daya reaktif', V: 'Tegangan', I: 'Arus', S: 'Daya semu' };
+  const ORDER = ['P', 'Q', 'S', 'I', 'V', 'U1', 'U2'];
+  const rank = (e) => { const i = ORDER.indexOf(e); return i < 0 ? 99 : i; };
+  const num = (x) => (x === '' || x == null || !Number.isFinite(Number(x))) ? null : Number(x);
+  const fmt = (v) => (Math.round(v * 10 + 1e-9) / 10).toFixed(1);
+  const tgl = (d) => new Date(d + 'T00:00:00Z').toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const bulan = (d) => new Date(d + 'T00:00:00Z').toLocaleDateString('id-ID', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const msg = (text, bad) => el('div', 'lm-msg' + (bad ? ' bad' : ''), text);
+  const selDate = $('lm-date'), selGi = $('lm-gi'), selNama = $('lm-nama'), selAwal = $('lm-awal'), selAkhir = $('lm-akhir');
+  const ALL = '*';
+  const themeBtn = $('lm-theme');
+  const curTheme = () => document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const setThemeLabel = () => { themeBtn.textContent = curTheme() === 'dark' ? '☀ Mode terang' : '☾ Mode gelap'; };
+  try { const t = localStorage.getItem('lm-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  setThemeLabel();
+  themeBtn.addEventListener('click', () => { const t = curTheme() === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = t; try { localStorage.setItem('lm-theme', t); } catch (e) {} setThemeLabel(); });
+
+  $('kategori').replaceChildren(...CATS.map(([k, t]) => { const b = el('button', 'lm-cat', t); b.type = 'button'; b.dataset.kat = k; return b; }));
+  $('kategori').addEventListener('click', (e) => { const b = e.target.closest('button[data-kat]'); if (b) dash.setParams({ kategori: b.dataset.kat, gi: null, nama: null }); });
+  selAwal.replaceChildren(...SLOTS.map((s) => new Option(jam(s), s)));
+  selAkhir.replaceChildren(...SLOTS.map((s) => new Option(jam(s), s)));
+  selDate.addEventListener('change', () => dash.setParams({ tanggal: selDate.value }));
+  const prevBtn = $('lm-prev'), nextBtn = $('lm-next');
+  prevBtn.addEventListener('click', () => { if (prevBtn.dataset.to) dash.setParams({ tanggal: prevBtn.dataset.to }); });
+  nextBtn.addEventListener('click', () => { if (nextBtn.dataset.to) dash.setParams({ tanggal: nextBtn.dataset.to }); });
+  selGi.addEventListener('change', () => dash.setParams({ gi: selGi.value, nama: null }));
+  selNama.addEventListener('change', () => dash.setParams({ nama: selNama.value }));
+  selAwal.addEventListener('change', () => {
+    const a = SLOTS.indexOf(selAwal.value), b = SLOTS.indexOf(dash.params().akhir ?? 'j2400');
+    dash.setParams(b >= 0 && b < a ? { awal: selAwal.value, akhir: selAwal.value } : { awal: selAwal.value });
+  });
+  selAkhir.addEventListener('change', () => {
+    const b = SLOTS.indexOf(selAkhir.value), a = SLOTS.indexOf(dash.params().awal ?? 'j0030');
+    dash.setParams(a > b ? { awal: selAkhir.value, akhir: selAkhir.value } : { akhir: selAkhir.value });
+  });
+  $('lm-tabs').addEventListener('click', (e) => { const b = e.target.closest('button[data-el]'); if (b) dash.setParams({ el: b.dataset.el }); });
+
+  // Group one day's rows once: kategori -> gi -> nama -> rows
+  const cache = new WeakMap();
+  const group = (rows) => {
+    if (cache.has(rows)) return cache.get(rows);
+    const m = new Map();
+    for (const r of rows) {
+      let a = m.get(r.kategori); if (!a) m.set(r.kategori, a = new Map());
+      let b = a.get(r.gi); if (!b) a.set(r.gi, b = new Map());
+      let l = b.get(r.nama); if (!l) b.set(r.nama, l = []); l.push(r);
+    }
+    cache.set(rows, m); return m;
+  };
+  const fill = (sel, opts, v) => { sel.replaceChildren(...opts.map(([val, t]) => new Option(t, val))); sel.value = v; };
+  const whereOf = (r) => ['kategori', 'gi', 'kv', 'nama', 'elemen'].map((k) => k + '=' + encodeURIComponent(r[k])).join('&');
+
+  const draw = (box, series, u, i0, i1) => {
+    box.replaceChildren();
+    const all = series.flatMap((s) => s.pts).filter((p) => p.v != null);
+    if (!all.length) { box.append(msg('Tidak ada nilai pada rentang jam ini')); return; }
+    const W = Math.max(280, box.clientWidth), H = 300;
+    let [lo, hi] = d3.extent(all, (p) => p.v); if (lo === hi) { lo -= 1; hi += 1; }
+    const y = d3.scaleLinear([lo, hi], [H - 26, 12]).nice(5);
+    const tf = d3.format(y.domain()[1] - y.domain()[0] < 5 ? '.1f' : ',.0f');
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Grafik per 30 menit');
+    const probe = svg.append('text').attr('font-size', 11).text(y.ticks(5).map(tf).reduce((a, b) => a.length >= b.length ? a : b, ''));
+    const ml = Math.ceil(probe.node().getComputedTextLength()) + 10; probe.remove();
+    const x = d3.scaleLinear([i0, Math.max(i1, i0 + 1)], [ml, W - 14]);
+    svg.selectAll('line.g').data(y.ticks(5)).join('line').attr('x1', ml).attr('x2', W - 14).attr('y1', y).attr('y2', y).style('stroke', 'var(--grid)');
+    svg.selectAll('text.y').data(y.ticks(5)).join('text').attr('x', ml - 6).attr('y', (d) => y(d) + 4).attr('text-anchor', 'end').attr('font-size', 11).style('fill', 'var(--fg-3)').text(tf);
+    const step = Math.max(1, Math.ceil((i1 - i0 + 1) / (W < 440 ? 4 : 8)));
+    svg.selectAll('text.x').data(d3.range(i0, i1 + 1, step)).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').attr('font-size', 11).style('fill', 'var(--fg-3)').text((i) => jam(SLOTS[i]));
+    svg.append('line').attr('x1', ml).attr('x2', W - 14).attr('y1', H - 26).attr('y2', H - 26).style('stroke', 'var(--axis)');
+    if (lo < 0 && hi > 0) svg.append('line').attr('x1', ml).attr('x2', W - 14).attr('y1', y(0)).attr('y2', y(0)).style('stroke', 'var(--axis)').attr('stroke-dasharray', '4 4');
+    const line = d3.line().defined((p) => p.v != null).x((p) => x(p.i)).y((p) => y(p.v));
+    if (series.length === 1) {
+      const s0 = series[0], gid = 'lm-grad';
+      const g = svg.append('defs').append('linearGradient').attr('id', gid).attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1);
+      g.append('stop').attr('offset', '0%').style('stop-color', s0.color).style('stop-opacity', .22);
+      g.append('stop').attr('offset', '100%').style('stop-color', s0.color).style('stop-opacity', 0);
+      const base = lo < 0 && hi > 0 ? y(0) : H - 26;
+      svg.append('path').datum(s0.pts).attr('d', d3.area().defined((p) => p.v != null).x((p) => x(p.i)).y0(base).y1((p) => y(p.v))).style('fill', `url(#${gid})`);
+    }
+    const cross = svg.append('line').attr('y1', 8).attr('y2', H - 26).style('stroke', 'var(--axis)').attr('stroke-dasharray', '3 3').attr('visibility', 'hidden');
+    const dots = series.map((s) => {
+      svg.append('path').datum(s.pts).attr('d', line).attr('fill', 'none').style('stroke', s.color).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+      return svg.append('circle').attr('r', 5).style('fill', s.color).style('stroke', 'var(--panel)').attr('stroke-width', 2).attr('visibility', 'hidden');
+    });
+    if (series.length === 1) {
+      const v = series[0].pts.filter((p) => p.v != null);
+      const hiP = v.reduce((a, b) => b.v > a.v ? b : a), loP = v.reduce((a, b) => b.v < a.v ? b : a);
+      [[hiP, 'var(--hi)', -12], [loP, 'var(--lo)', y(loP.v) + 24 > H - 30 ? -12 : 20]].forEach(([pt, c, dy]) => {
+        svg.append('circle').attr('cx', x(pt.i)).attr('cy', y(pt.v)).attr('r', 5).style('fill', c).style('stroke', 'var(--panel)').attr('stroke-width', 2);
+        const tx = Math.max(ml + 20, Math.min(W - 34, x(pt.i)));
+        svg.append('text').attr('x', tx).attr('y', y(pt.v) + dy).attr('text-anchor', 'middle').attr('font-size', 12).attr('font-weight', 650).style('fill', c).style('paint-order', 'stroke').style('stroke', 'var(--panel)').attr('stroke-width', 4).text(fmt(pt.v));
+      });
+    }
+    const tip = el('div', 'lm-tip'); tip.hidden = true; box.append(tip);
+    svg.append('rect').attr('x', ml).attr('y', 0).attr('width', W - 14 - ml).attr('height', H - 26).attr('fill', 'transparent')
+      .on('mousemove', (ev) => {
+        const i = Math.max(i0, Math.min(i1, Math.round(x.invert(d3.pointer(ev)[0]))));
+        const lines = [el('span', 'lm-tt', 'Pukul ' + jam(SLOTS[i]))];
+        cross.attr('x1', x(i)).attr('x2', x(i)).attr('visibility', 'visible');
+        let topY = H;
+        series.forEach((s, k) => {
+          const p = s.pts[i - i0];
+          if (p.v == null) { dots[k].attr('visibility', 'hidden'); return; }
+          dots[k].attr('cx', x(i)).attr('cy', y(p.v)).attr('visibility', 'visible'); topY = Math.min(topY, y(p.v));
+          const row = el('span'); if (series.length > 1) { const sw = el('span', 'lm-sw'); sw.style.background = s.color; row.append(sw, s.name + '  '); }
+          row.append(el('b', null, fmt(p.v) + (u ? ' ' + u : ''))); lines.push(row);
+        });
+        if (lines.length === 1) { tip.hidden = true; return; }
+        tip.replaceChildren(...lines); tip.hidden = false;
+        const k = box.clientWidth / W, tw = tip.offsetWidth;
+        tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, x(i) * k - tw / 2)) + 'px';
+        tip.style.top = Math.max(0, topY * k - tip.offsetHeight - 10) + 'px';
+      })
+      .on('mouseleave', () => { dots.forEach((d) => d.attr('visibility', 'hidden')); cross.attr('visibility', 'hidden'); tip.hidden = true; });
+  };
+
+  dash.onData(() => {
+    const p = dash.params();
+    const take = $('lm-take'), chart = $('lm-chart'), stats = $('lm-stats'), tabs = $('lm-tabs'), card = $('grafik');
+    const kat = CATS.some((c) => c[0] === p.kategori) ? p.kategori : 'IBT500';
+    const catInfo = CATS.find((c) => c[0] === kat);
+    document.querySelectorAll('.lm-cat').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.kat === kat)));
+    $('lm-nama-lbl').textContent = catInfo[2];
+
+    let i0 = SLOTS.indexOf(p.awal ?? 'j0030'), i1 = SLOTS.indexOf(p.akhir ?? 'j2400');
+    if (i0 < 0) i0 = 0; if (i1 < 0) i1 = 47; if (i1 < i0) [i0, i1] = [i1, i0];
+    selAwal.value = SLOTS[i0]; selAkhir.value = SLOTS[i1];
+    const rentang = jam(SLOTS[i0]) + ' sampai ' + jam(SLOTS[i1]);
+
+    const list = dash.data('daftar_tanggal');
+    if (list.status !== 'ok') {
+      if (list.status === 'error') { take.textContent = 'Daftar tanggal gagal dimuat.'; chart.replaceChildren(msg('Failed to load', true)); }
+      return;
+    }
+    const dates = list.data.map((r) => r.tanggal).sort();
+    selDate.replaceChildren(...d3.groups(dates.slice().reverse(), (d) => d.slice(0, 7)).map(([, ds]) => {
+      const og = document.createElement('optgroup'); og.label = bulan(ds[0]); og.append(...ds.map((d) => new Option(new Date(d + 'T00:00:00Z').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }), d))); return og;
+    }));
+    const tanggal = dates.includes(p.tanggal) ? p.tanggal : dates[dates.length - 1];
+    selDate.value = tanggal;
+    const di = dates.indexOf(tanggal);
+    prevBtn.dataset.to = dates[di - 1] || ''; prevBtn.disabled = di <= 0;
+    nextBtn.dataset.to = dates[di + 1] || ''; nextBtn.disabled = di >= dates.length - 1;
+    prevBtn.title = di > 0 ? tgl(dates[di - 1]) : ''; nextBtn.title = di < dates.length - 1 ? tgl(dates[di + 1]) : '';
+    $('lm-hari').textContent = new Date(tanggal + 'T00:00:00Z').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+    const info = list.data.find((r) => r.tanggal === tanggal);
+    const id = info.dataset;
+    card.setAttribute('data-source', id);
+
+    const markCell = (span, r, q) => { span.textContent = fmt(q.v); if (!q.s) return; span.setAttribute('data-source', id); span.setAttribute('data-field', q.s); span.setAttribute('data-where', whereOf(r)); };
+    const src = dash.data(id);
+    if (src.status !== 'ok') {
+      stats.replaceChildren(); tabs.replaceChildren();
+      if (src.status === 'error') { chart.replaceChildren(msg('Failed to load', true)); take.textContent = 'Logsheet ' + tgl(tanggal) + ' gagal dimuat.'; }
+      else chart.replaceChildren(msg('Memuat logsheet ' + tgl(tanggal) + ' …'));
+      return;
+    }
+    $('lm-notes').textContent = `Data dari sheet Mapping logsheet LSD_REG2.2, ${dates.length} tanggal (${tgl(dates[0])} sampai ${tgl(dates[dates.length - 1])}). Satuan: P dalam MW, Q dalam MVAr, I dalam A. IBT ditampilkan per unit; SUTT paralel dijumlahkan per gardu induk (misalnya CKLNG-1 + CKLNG-2 menjadi CKLNG-1,2); tegangan tidak dijumlahkan sehingga tidak ditampilkan untuk kategori ini. P dan Q yang di data asli dominan minus (total 1 sampai 7 Okt) dikali -1 agar tampil positif. Nilai minus yang masih muncul berarti arah aliran berbalik pada jam tersebut.`;
+
+    const byGi = group(src.data).get(kat) || new Map();
+    const giList = [...byGi.keys()].sort();
+    if (!giList.length) { fill(selGi, [], ''); fill(selNama, [], ''); stats.replaceChildren(); tabs.replaceChildren(); chart.replaceChildren(msg('Tidak ada data ' + catInfo[1] + ' pada tanggal ini')); return; }
+    const gi = byGi.has(p.gi) ? p.gi : giList[0];
+    fill(selGi, giList.map((g) => [g, g]), gi);
+    const namaMap = byGi.get(gi);
+    const namaList = [...namaMap.keys()].sort((a, b) => a.localeCompare(b, 'id', { numeric: true }));
+    const isTrafo = kat === 'TRAFO' || kat.startsWith('IBT');
+    const opts = (isTrafo && namaList.length > 1 ? [[ALL, kat === 'TRAFO' ? 'Semua trafo' : 'Semua IBT']] : []).concat(namaList.map((n) => [n, n]));
+    const nama = opts.some((o) => o[0] === p.nama) ? p.nama : opts[0][0];
+    fill(selNama, opts, nama);
+
+    const picked = nama === ALL ? namaList : [nama];
+    const rowsAll = picked.flatMap((n) => namaMap.get(n));
+    const els = [...new Set(rowsAll.map((r) => r.elemen))].sort((a, b) => rank(a) - rank(b));
+    const elm = els.includes(p.el) ? p.el : els[0];
+    tabs.replaceChildren(...els.map((e) => {
+      const b = el('button', 'lm-tab', (NAME[e] || 'Elemen') + ' ' + e + (UNIT[e] ? ' (' + UNIT[e] + ')' : '')); b.type = 'button'; b.dataset.el = e;
+      b.setAttribute('aria-pressed', String(e === elm)); return b;
+    }));
+    const u = UNIT[elm] || '';
+    const rows = picked.map((n) => namaMap.get(n).find((r) => r.elemen === elm)).filter(Boolean);
+
+    const ext = (r) => {
+      const vals = SLOTS.slice(i0, i1 + 1).map((s) => ({ s, v: num(r[s]) })).filter((q) => q.v != null);
+      return vals.length ? { hi: vals.reduce((a, b) => b.v > a.v ? b : a), lo: vals.reduce((a, b) => b.v < a.v ? b : a), avg: { v: vals.reduce((t, q) => t + q.v, 0) / vals.length, s: null } } : null;
+    };
+
+    if (rows.length === 1) {
+      const r = rows[0], e = ext(r);
+      const box = el('div', 'lm-stats');
+      const stat = (label, q, k) => {
+        const d = el('div', 'lm-stat ' + k); const v = el('span', 'lm-big');
+        const a = el('span', 'lm-at'); const row = el('div', 'lm-bigrow'); row.append(v);
+        if (q) { markCell(v, r, q); if (u) row.append(el('span', 'lm-unit', u)); a.textContent = q.s ? 'pukul ' + jam(q.s) : 'pukul ' + rentang; } else { v.textContent = '—'; a.textContent = 'tidak ada nilai'; }
+        d.append(el('span', 'lm-lbl', label), row, a); return d;
+      };
+      box.append(stat('Tertinggi', e?.hi, 'k-hi'), stat('Terendah', e?.lo, 'k-lo'), stat('Rata-rata', e?.avg, 'k-avg'));
+      stats.replaceChildren(box);
+    } else {
+      const t = el('table', 'lm-table');
+      const hr = el('tr'); [catInfo[2], 'Tertinggi' + (u ? ' (' + u + ')' : ''), 'Pukul', 'Terendah' + (u ? ' (' + u + ')' : ''), 'Pukul', 'Rata-rata' + (u ? ' (' + u + ')' : '')].forEach((h) => hr.append(el('th', null, h)));
+      t.append(el('thead')); t.tHead.append(hr);
+      const tb = el('tbody');
+      rows.forEach((r, k) => {
+        const e = ext(r); const tr = el('tr');
+        const c0 = el('td'); const sw = el('span', 'lm-sw'); sw.style.background = dash.colors[k % dash.colors.length]; c0.append(sw, r.nama); tr.append(c0);
+        [['hi', true], ['lo', true], ['avg', false]].forEach(([key, withTime]) => {
+          const td = el('td', key === 'hi' ? 'c-hi' : null); const sp = el('span');
+          if (e) markCell(sp, r, e[key]); else sp.textContent = '—';
+          td.append(sp); tr.append(td);
+          if (withTime) tr.append(el('td', 'c-time', e ? jam(e[key].s) : ''));
+        });
+        tb.append(tr);
+      });
+      t.append(tb);
+      const wrap = el('div', 'lm-tablebox'); wrap.append(t); stats.replaceChildren(wrap);
+    }
+
+    const series = rows.map((r, k) => ({ name: r.nama, color: dash.colors[k % dash.colors.length], pts: SLOTS.slice(i0, i1 + 1).map((s, j) => ({ i: i0 + j, v: num(r[s]) })) }));
+    draw(chart, series, u, i0, i1);
+
+    const judul = nama === ALL ? `${kat === 'TRAFO' ? 'Semua trafo' : 'Semua ' + catInfo[1]} GI ${gi}` : `${catInfo[1]} ${nama}, GI ${gi}`;
+    const e1 = rows.length === 1 ? ext(rows[0]) : null;
+    $('lm-judul').textContent = judul;
+    take.textContent = rows.length === 1 && e1
+      ? `${NAME[elm] || elm} per 30 menit, pukul ${rentang}`
+      : `${NAME[elm] || elm} per 30 menit, pukul ${rentang}. ${rows.length} unit.`;
+    const ang = rows.length === 1 && rows[0].anggota.includes(' + ') ? ` Nilai ini jumlah dari ${rows[0].anggota}.` : '';
+    $('lm-meta').textContent = `Sumber: ${info.file_excel}, sheet Mapping.${ang}`;
+  });
+})();
+</script>
